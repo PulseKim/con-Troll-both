@@ -7,12 +7,12 @@
 #IncludeRegexTransform: 
 
 /home/mrl/dart/HandTasks/ArmMaker.cpp
-ArmMaker.hpp
-/home/mrl/dart/HandTasks/ArmMaker.hpp
+ArmMaker.h
+/home/mrl/dart/HandTasks/ArmMaker.h
 
-/home/mrl/dart/HandTasks/ArmMaker.hpp
-SkelParser.hpp
-/home/mrl/dart/HandTasks/SkelParser.hpp
+/home/mrl/dart/HandTasks/ArmMaker.h
+SkelParser.h
+/home/mrl/dart/HandTasks/SkelParser.h
 iostream
 -
 dart/dart.hpp
@@ -23,10 +23,10 @@ dart/utils/utils.hpp
 -
 
 /home/mrl/dart/HandTasks/Controller.cpp
-Controller.hpp
-/home/mrl/dart/HandTasks/Controller.hpp
+Controller.h
+/home/mrl/dart/HandTasks/Controller.h
 
-/home/mrl/dart/HandTasks/Controller.hpp
+/home/mrl/dart/HandTasks/Controller.h
 iostream
 -
 dart/dart.hpp
@@ -37,10 +37,10 @@ dart/utils/utils.hpp
 -
 
 /home/mrl/dart/HandTasks/IkSolver.cpp
-IkSolver.hpp
-/home/mrl/dart/HandTasks/IkSolver.hpp
+IkSolver.h
+/home/mrl/dart/HandTasks/IkSolver.h
 
-/home/mrl/dart/HandTasks/IkSolver.hpp
+/home/mrl/dart/HandTasks/IkSolver.h
 iostream
 -
 dart/dart.hpp
@@ -51,10 +51,10 @@ dart/utils/utils.hpp
 -
 
 /home/mrl/dart/HandTasks/MyWindow.cpp
-MyWindow.hpp
-/home/mrl/dart/HandTasks/MyWindow.hpp
+MyWindow.h
+/home/mrl/dart/HandTasks/MyWindow.h
 
-/home/mrl/dart/HandTasks/MyWindow.hpp
+/home/mrl/dart/HandTasks/MyWindow.h
 iostream
 -
 dart/dart.hpp
@@ -63,12 +63,30 @@ dart/gui/gui.hpp
 -
 dart/utils/utils.hpp
 -
-ArmMaker.hpp
-/home/mrl/dart/HandTasks/ArmMaker.hpp
-Controller.hpp
-/home/mrl/dart/HandTasks/Controller.hpp
-IkSolver.hpp
-/home/mrl/dart/HandTasks/IkSolver.hpp
+ArmMaker.h
+/home/mrl/dart/HandTasks/ArmMaker.h
+IkSolver.h
+/home/mrl/dart/HandTasks/IkSolver.h
+Optimizer.h
+/home/mrl/dart/HandTasks/Optimizer.h
+
+/home/mrl/dart/HandTasks/Optimizer.cpp
+Optimizer.h
+/home/mrl/dart/HandTasks/Optimizer.h
+
+/home/mrl/dart/HandTasks/Optimizer.h
+iostream
+-
+dart/dart.hpp
+-
+dart/gui/gui.hpp
+-
+dart/utils/utils.hpp
+-
+fstream
+-
+Controller.h
+/home/mrl/dart/HandTasks/Controller.h
 
 /home/mrl/dart/HandTasks/SkelParser.cpp
 iostream
@@ -79,10 +97,10 @@ dart/gui/gui.hpp
 -
 dart/utils/utils.hpp
 -
-SkelParser.hpp
-/home/mrl/dart/HandTasks/SkelParser.hpp
+SkelParser.h
+/home/mrl/dart/HandTasks/SkelParser.h
 
-/home/mrl/dart/HandTasks/SkelParser.hpp
+/home/mrl/dart/HandTasks/SkelParser.h
 iostream
 -
 dart/dart.hpp
@@ -101,8 +119,8 @@ dart/gui/gui.hpp
 -
 dart/simulation/simulation.hpp
 -
-MyWindow.hpp
-/home/mrl/dart/HandTasks/MyWindow.hpp
+MyWindow.h
+/home/mrl/dart/HandTasks/MyWindow.h
 
 /usr/include/eigen3/Eigen/Cholesky
 Core

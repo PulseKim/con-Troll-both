@@ -81,9 +81,33 @@ CMakeFiles/manipulate.dir/IkSolver.cpp.o.provides: CMakeFiles/manipulate.dir/IkS
 CMakeFiles/manipulate.dir/IkSolver.cpp.o.provides.build: CMakeFiles/manipulate.dir/IkSolver.cpp.o
 
 
+CMakeFiles/manipulate.dir/Optimizer.cpp.o: CMakeFiles/manipulate.dir/flags.make
+CMakeFiles/manipulate.dir/Optimizer.cpp.o: ../Optimizer.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/mrl/dart/HandTasks/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/manipulate.dir/Optimizer.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/manipulate.dir/Optimizer.cpp.o -c /home/mrl/dart/HandTasks/Optimizer.cpp
+
+CMakeFiles/manipulate.dir/Optimizer.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/manipulate.dir/Optimizer.cpp.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/mrl/dart/HandTasks/Optimizer.cpp > CMakeFiles/manipulate.dir/Optimizer.cpp.i
+
+CMakeFiles/manipulate.dir/Optimizer.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/manipulate.dir/Optimizer.cpp.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/mrl/dart/HandTasks/Optimizer.cpp -o CMakeFiles/manipulate.dir/Optimizer.cpp.s
+
+CMakeFiles/manipulate.dir/Optimizer.cpp.o.requires:
+
+.PHONY : CMakeFiles/manipulate.dir/Optimizer.cpp.o.requires
+
+CMakeFiles/manipulate.dir/Optimizer.cpp.o.provides: CMakeFiles/manipulate.dir/Optimizer.cpp.o.requires
+	$(MAKE) -f CMakeFiles/manipulate.dir/build.make CMakeFiles/manipulate.dir/Optimizer.cpp.o.provides.build
+.PHONY : CMakeFiles/manipulate.dir/Optimizer.cpp.o.provides
+
+CMakeFiles/manipulate.dir/Optimizer.cpp.o.provides.build: CMakeFiles/manipulate.dir/Optimizer.cpp.o
+
+
 CMakeFiles/manipulate.dir/ArmMaker.cpp.o: CMakeFiles/manipulate.dir/flags.make
 CMakeFiles/manipulate.dir/ArmMaker.cpp.o: ../ArmMaker.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/mrl/dart/HandTasks/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/manipulate.dir/ArmMaker.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/mrl/dart/HandTasks/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/manipulate.dir/ArmMaker.cpp.o"
 	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/manipulate.dir/ArmMaker.cpp.o -c /home/mrl/dart/HandTasks/ArmMaker.cpp
 
 CMakeFiles/manipulate.dir/ArmMaker.cpp.i: cmake_force
@@ -107,7 +131,7 @@ CMakeFiles/manipulate.dir/ArmMaker.cpp.o.provides.build: CMakeFiles/manipulate.d
 
 CMakeFiles/manipulate.dir/MyWindow.cpp.o: CMakeFiles/manipulate.dir/flags.make
 CMakeFiles/manipulate.dir/MyWindow.cpp.o: ../MyWindow.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/mrl/dart/HandTasks/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/manipulate.dir/MyWindow.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/mrl/dart/HandTasks/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/manipulate.dir/MyWindow.cpp.o"
 	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/manipulate.dir/MyWindow.cpp.o -c /home/mrl/dart/HandTasks/MyWindow.cpp
 
 CMakeFiles/manipulate.dir/MyWindow.cpp.i: cmake_force
@@ -131,7 +155,7 @@ CMakeFiles/manipulate.dir/MyWindow.cpp.o.provides.build: CMakeFiles/manipulate.d
 
 CMakeFiles/manipulate.dir/Controller.cpp.o: CMakeFiles/manipulate.dir/flags.make
 CMakeFiles/manipulate.dir/Controller.cpp.o: ../Controller.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/mrl/dart/HandTasks/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/manipulate.dir/Controller.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/mrl/dart/HandTasks/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/manipulate.dir/Controller.cpp.o"
 	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/manipulate.dir/Controller.cpp.o -c /home/mrl/dart/HandTasks/Controller.cpp
 
 CMakeFiles/manipulate.dir/Controller.cpp.i: cmake_force
@@ -155,7 +179,7 @@ CMakeFiles/manipulate.dir/Controller.cpp.o.provides.build: CMakeFiles/manipulate
 
 CMakeFiles/manipulate.dir/SkelParser.cpp.o: CMakeFiles/manipulate.dir/flags.make
 CMakeFiles/manipulate.dir/SkelParser.cpp.o: ../SkelParser.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/mrl/dart/HandTasks/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/manipulate.dir/SkelParser.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/mrl/dart/HandTasks/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/manipulate.dir/SkelParser.cpp.o"
 	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/manipulate.dir/SkelParser.cpp.o -c /home/mrl/dart/HandTasks/SkelParser.cpp
 
 CMakeFiles/manipulate.dir/SkelParser.cpp.i: cmake_force
@@ -179,7 +203,7 @@ CMakeFiles/manipulate.dir/SkelParser.cpp.o.provides.build: CMakeFiles/manipulate
 
 CMakeFiles/manipulate.dir/main.cpp.o: CMakeFiles/manipulate.dir/flags.make
 CMakeFiles/manipulate.dir/main.cpp.o: ../main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/mrl/dart/HandTasks/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/manipulate.dir/main.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/mrl/dart/HandTasks/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/manipulate.dir/main.cpp.o"
 	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/manipulate.dir/main.cpp.o -c /home/mrl/dart/HandTasks/main.cpp
 
 CMakeFiles/manipulate.dir/main.cpp.i: cmake_force
@@ -204,6 +228,7 @@ CMakeFiles/manipulate.dir/main.cpp.o.provides.build: CMakeFiles/manipulate.dir/m
 # Object files for target manipulate
 manipulate_OBJECTS = \
 "CMakeFiles/manipulate.dir/IkSolver.cpp.o" \
+"CMakeFiles/manipulate.dir/Optimizer.cpp.o" \
 "CMakeFiles/manipulate.dir/ArmMaker.cpp.o" \
 "CMakeFiles/manipulate.dir/MyWindow.cpp.o" \
 "CMakeFiles/manipulate.dir/Controller.cpp.o" \
@@ -214,6 +239,7 @@ manipulate_OBJECTS = \
 manipulate_EXTERNAL_OBJECTS =
 
 manipulate: CMakeFiles/manipulate.dir/IkSolver.cpp.o
+manipulate: CMakeFiles/manipulate.dir/Optimizer.cpp.o
 manipulate: CMakeFiles/manipulate.dir/ArmMaker.cpp.o
 manipulate: CMakeFiles/manipulate.dir/MyWindow.cpp.o
 manipulate: CMakeFiles/manipulate.dir/Controller.cpp.o
@@ -248,7 +274,7 @@ manipulate: /usr/lib/liboctomath.so
 manipulate: /usr/lib/x86_64-linux-gnu/libboost_regex.so
 manipulate: /usr/lib/libipopt.so
 manipulate: CMakeFiles/manipulate.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/mrl/dart/HandTasks/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking CXX executable manipulate"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/mrl/dart/HandTasks/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking CXX executable manipulate"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/manipulate.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -257,6 +283,7 @@ CMakeFiles/manipulate.dir/build: manipulate
 .PHONY : CMakeFiles/manipulate.dir/build
 
 CMakeFiles/manipulate.dir/requires: CMakeFiles/manipulate.dir/IkSolver.cpp.o.requires
+CMakeFiles/manipulate.dir/requires: CMakeFiles/manipulate.dir/Optimizer.cpp.o.requires
 CMakeFiles/manipulate.dir/requires: CMakeFiles/manipulate.dir/ArmMaker.cpp.o.requires
 CMakeFiles/manipulate.dir/requires: CMakeFiles/manipulate.dir/MyWindow.cpp.o.requires
 CMakeFiles/manipulate.dir/requires: CMakeFiles/manipulate.dir/Controller.cpp.o.requires

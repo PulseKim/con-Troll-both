@@ -1,34 +1,41 @@
-#include "MyWindow.hpp"
+#include "MyWindow.h"
 
 Eigen::VectorXd rest_poseR;
 Eigen::VectorXd target_poseR;
-std::vector<std::pair<Eigen::Vector3d, int>> Ends;
+std::vector<std::pair<Eigen::Vector3d, std::string>> Ends;
 bool movement;
 int flag;
 int total_steps = 300;
+double rad_obj = 0.065;
+double height_obj = 0.2;
 
 MyWindow::MyWindow(const WorldPtr& world) : SimWindow()
 {
-	this->setWorld(world);
-	mWorld->setGravity(Eigen::Vector3d(0, -9.81, 0));
-	this->initSkeleton();
-	mControllerR = dart::common::make_unique<Controller>(
-		mWorld->getSkeleton("arm_r"));
-	mControllerL = dart::common::make_unique<Controller>(
-		mWorld->getSkeleton("arm_l"));
-	movement = false;
+	this->setWorld(world);	
+	this->initWindowSetting();
 
 }
+
+void MyWindow::initWindowSetting()
+{
+	mWorld->setGravity(Eigen::Vector3d(0, -9.81, 0));
+	this->initSkeleton();
+	mControllerR = dart::common::make_unique<Controller>(mWorld->getSkeleton("arm_r"));
+	mControllerL = dart::common::make_unique<Controller>(mWorld->getSkeleton("arm_l"));
+	movement = false;
+	Optimizer* op = new Optimizer(mWorld,"arm_l", "arm_r");
+	this->setEndEffector(0);
+
+}
+
 
 void MyWindow::initSkeleton()
 {
 	mFloor = Skeleton::create("floor");
 	mArm_r = Skeleton::create("arm_r");
 	mArm_l = Skeleton::create("arm_l");
-
 	SkelParser skel;
-	skel.weldBox(mFloor, "floor", Eigen::Vector3d(2.0, 0.03, 2.0), Eigen::Vector3d(0, 0.2, -1.0), 1.0, dart::Color::White());
-	
+	skel.weldBox(mFloor, "floor", Eigen::Vector3d(2.0, 0.03, 2.0), Eigen::Vector3d(0, 0.015, -1.0), 1.0, dart::Color::White());	
 	mArmMaker = dart::common::make_unique<ArmMaker>(mArm_r, mArm_l);
 	mArmMaker->makeFullArm(0.7, Eigen::Vector3d(0,0.4,0));
 	mWorld->addSkeleton(mFloor);
@@ -37,15 +44,60 @@ void MyWindow::initSkeleton()
 	rest_poseR = mArm_r->getPositions();
 	target_poseR = rest_poseR;
 
-
-	Ends.push_back(std::make_pair(Eigen::Vector3d(-0.25,0.35,0.7),0));
-	Ends.push_back(std::make_pair(Eigen::Vector3d(-0.28,0.35,0.71),1));
-	// Ends.push_back(std::make_pair(Eigen::Vector3d(),3));
-	// Ends.push_back(std::make_pair(Eigen::Vector3d(),4));
-
+	this->setObject();
 }
 
-Eigen::VectorXd MyWindow::smoothMovement(int current_idx, int total_steps, const Eigen::VectorXd target, const Eigen::VectorXd original)
+void MyWindow::setObject()
+{
+	mObj = Skeleton::create("object");
+	SkelParser skel;
+	skel.freeCylinder(mObj, "cylinder1", rad_obj, height_obj, Eigen::Vector3d(0,0, 0), 0.1, dart::Color::Red());
+	mObj->setPosition(0, this->degToRad(90));
+	mObj->setPosition(3, -0.10);
+	mObj->setPosition(4, height_obj/2 + 0.001);
+	mObj->setPosition(5, 0.65);
+	mWorld->addSkeleton(mObj);
+}
+
+Eigen::VectorXd MyWindow::initialGuess(std::string arm_side, std::string obj_name)
+{
+	Eigen::VectorXd initGuess = mWorld->getSkeleton(arm_side)->getPositions();
+	std::vector<std::pair<Eigen::Vector3d, std::string>> initEndGuess;
+	Eigen::Vector3d centre_obj = mWorld->getSkeleton(obj_name)->getCOM();
+	int side;
+	double offsetx = 0.002;
+	double offsety = 0.02;
+	std::cout << centre_obj.transpose() << std::endl;
+	if(arm_side == "arm_l") side = 1;
+	else if(arm_side == "arm_r") side = -1;
+	for(int i =0 ; i < 4; ++i)
+	{
+		initEndGuess.push_back(std::make_pair(centre_obj+Eigen::Vector3d(0,height_obj/5*(4-i)+offsety*2,rad_obj+offsetx)- Eigen::Vector3d(0,centre_obj[1],0) ,"patch" + std::to_string(i)));
+	}
+	// initEndGuess.push_back(std::make_pair(centre_obj+Eigen::Vector3d(-rad_obj-0.03,height_obj/5*3,0)- Eigen::Vector3d(0,centre_obj[1],0) ,"palm_patch"));
+	// initEndGuess.push_back(std::make_pair(centre_obj+Eigen::Vector3d(0,height_obj+offsety, 0)- Eigen::Vector3d(0,centre_obj[1],0) , "thumbpatch"));
+
+	IkSolver ik;
+	initGuess = ik.IKMultiple(mWorld->getSkeleton(arm_side), initEndGuess, 2000);
+	return initGuess;
+}
+
+void MyWindow::setEndEffector(int type)
+{
+	if(type == 0)
+	{
+		//Dummy End Effectors
+		Ends.push_back(std::make_pair(Eigen::Vector3d(-0.0,0.02,0.0),"patch2"));
+		// Ends.push_back(std::make_pair(Eigen::Vector3d(-0.28,0.35,0.71),1));
+	}
+	else if(type == 1)
+	{
+
+	}
+	
+}
+
+Eigen::VectorXd MyWindow::smoothMovement(int current_idx, int total_steps, const Eigen::VectorXd original, const Eigen::VectorXd target)
 {
 	Eigen::VectorXd pose = original;
 	for(int j = 0 ; j < target.size(); ++j){
@@ -54,6 +106,8 @@ Eigen::VectorXd MyWindow::smoothMovement(int current_idx, int total_steps, const
 	return pose;
 }
 
+
+
 void MyWindow::keyboard(unsigned char key, int x, int y)
 {
 	IkSolver ik;
@@ -61,17 +115,20 @@ void MyWindow::keyboard(unsigned char key, int x, int y)
 	{
 		//Implement Here
 		case 'a':
-		// target_poseR[25] += 0.3;
+		target_poseR = this->initialGuess("arm_r", "object");
 		movement = true;
 		flag = 0;
 		break;
-
 		case 's':		
 		target_poseR = ik.IKMultiple(mArm_r, Ends, 1000);
 		movement = true;
 		flag = 0;
 		break;
-
+		case'q':
+		target_poseR[3] -= this->degToRad(5);
+		movement = true;
+		flag = 0;
+		break;
 		default:
 		SimWindow::keyboard(key, x, y);
 	}	
@@ -89,7 +146,7 @@ void MyWindow::timeStepping()
 
 	if(movement)
 	{
-		mControllerR->setTargetPosition(this->smoothMovement(flag, total_steps, target_poseR, rest_poseR));
+		mControllerR->setTargetPosition(this->smoothMovement(flag, total_steps, rest_poseR, target_poseR));
 		flag++;
 		if(flag == total_steps) 
 		{
@@ -101,8 +158,6 @@ void MyWindow::timeStepping()
 
 	SimWindow::timeStepping();
 }
-
-
 
 void MyWindow::draw()
 {

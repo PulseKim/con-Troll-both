@@ -1,5 +1,6 @@
 file(REMOVE_RECURSE
   "CMakeFiles/manipulate.dir/IkSolver.cpp.o"
+  "CMakeFiles/manipulate.dir/Optimizer.cpp.o"
   "CMakeFiles/manipulate.dir/ArmMaker.cpp.o"
   "CMakeFiles/manipulate.dir/MyWindow.cpp.o"
   "CMakeFiles/manipulate.dir/Controller.cpp.o"

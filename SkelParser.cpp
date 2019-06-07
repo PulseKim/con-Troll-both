@@ -2,7 +2,7 @@
 #include <dart/dart.hpp>
 #include <dart/gui/gui.hpp>
 #include <dart/utils/utils.hpp>
-#include "SkelParser.hpp"
+#include "SkelParser.h"
 
 SkelParser::SkelParser(){}
 SkelParser::~SkelParser(){}
@@ -74,6 +74,75 @@ SkelParser::weldBox
 	bn->setInertia(inertia);	
 	return bn;
 }
+
+BodyNode* 
+SkelParser::freeCylinder
+(const SkeletonPtr& skel, const std::string& name, double rad, double height, 
+	const Eigen::Vector3d offChild, double mass, const Eigen::Vector3d color)
+{
+	//Shape
+	ShapePtr shape = std::shared_ptr<CylinderShape>(new CylinderShape(rad, height));
+
+	//Inertia
+	dart::dynamics::Inertia inertia;
+	inertia.setMass(mass);
+	inertia.setMoment(shape->computeInertia(mass));
+
+	//Joint Parsing
+	BodyNode* bn;
+	FreeJoint::Properties props;
+	props.mName = name;
+
+	Eigen::Isometry3d T1;
+	T1.setIdentity();	
+	T1.translation() = offChild;
+	props.mT_ChildBodyToJoint = T1;
+
+	bn = skel->createJointAndBodyNodePair<FreeJoint>(nullptr,props,BodyNode::AspectProperties(name)).second;
+	bn->createShapeNodeWith<VisualAspect,CollisionAspect,DynamicsAspect>(shape);
+	auto visualShapenodes = bn->getShapeNodesWith<VisualAspect>();
+	visualShapenodes[0]->getVisualAspect()->setColor(color);
+	bn->setInertia(inertia);	
+	return bn;
+}
+
+
+BodyNode* 
+SkelParser::freeCylinder
+(const SkeletonPtr& skel, BodyNode* parent, const std::string& name, double rad, double height, 
+	const Eigen::Vector3d offChild, const Eigen::Vector3d offParent, double mass, const Eigen::Vector3d color)
+{
+	//Shape
+	ShapePtr shape = std::shared_ptr<CylinderShape>(new CylinderShape(rad, height));
+
+	//Inertia
+	dart::dynamics::Inertia inertia;
+	inertia.setMass(mass);
+	inertia.setMoment(shape->computeInertia(mass));
+
+	//Joint Parsing
+	BodyNode* bn;
+	FreeJoint::Properties props;
+	props.mName = name;
+
+	Eigen::Isometry3d T1;
+	T1.setIdentity();	
+	T1.translation() = offChild;
+	props.mT_ChildBodyToJoint = T1;
+
+	Eigen::Isometry3d T2;
+	T2.setIdentity();
+	T2.translation() = offParent;
+	props.mT_ParentBodyToJoint = T2;
+
+	bn = skel->createJointAndBodyNodePair<FreeJoint>(parent,props,BodyNode::AspectProperties(name)).second;
+	bn->createShapeNodeWith<VisualAspect,CollisionAspect,DynamicsAspect>(shape);
+	auto visualShapenodes = bn->getShapeNodesWith<VisualAspect>();
+	visualShapenodes[0]->getVisualAspect()->setColor(color);
+	bn->setInertia(inertia);	
+	return bn;
+}
+
 
 //BallJoint Overriding with different parameters
 

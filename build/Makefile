@@ -231,6 +231,33 @@ MyWindow.cpp.s:
 	$(MAKE) -f CMakeFiles/manipulate.dir/build.make CMakeFiles/manipulate.dir/MyWindow.cpp.s
 .PHONY : MyWindow.cpp.s
 
+Optimizer.o: Optimizer.cpp.o
+
+.PHONY : Optimizer.o
+
+# target to build an object file
+Optimizer.cpp.o:
+	$(MAKE) -f CMakeFiles/manipulate.dir/build.make CMakeFiles/manipulate.dir/Optimizer.cpp.o
+.PHONY : Optimizer.cpp.o
+
+Optimizer.i: Optimizer.cpp.i
+
+.PHONY : Optimizer.i
+
+# target to preprocess a source file
+Optimizer.cpp.i:
+	$(MAKE) -f CMakeFiles/manipulate.dir/build.make CMakeFiles/manipulate.dir/Optimizer.cpp.i
+.PHONY : Optimizer.cpp.i
+
+Optimizer.s: Optimizer.cpp.s
+
+.PHONY : Optimizer.s
+
+# target to generate assembly for a file
+Optimizer.cpp.s:
+	$(MAKE) -f CMakeFiles/manipulate.dir/build.make CMakeFiles/manipulate.dir/Optimizer.cpp.s
+.PHONY : Optimizer.cpp.s
+
 SkelParser.o: SkelParser.cpp.o
 
 .PHONY : SkelParser.o
@@ -306,6 +333,9 @@ help:
 	@echo "... MyWindow.o"
 	@echo "... MyWindow.i"
 	@echo "... MyWindow.s"
+	@echo "... Optimizer.o"
+	@echo "... Optimizer.i"
+	@echo "... Optimizer.s"
 	@echo "... SkelParser.o"
 	@echo "... SkelParser.i"
 	@echo "... SkelParser.s"

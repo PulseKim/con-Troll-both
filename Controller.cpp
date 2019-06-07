@@ -1,15 +1,17 @@
-#include "Controller.hpp"
+#include "Controller.h"
 
 const double rad = M_PI /180.0;
 
-Controller::Controller(const SkeletonPtr& finger): mFinger(finger){
+Controller::Controller(const SkeletonPtr& finger): mFinger(finger)
+{
     jointControlSetter();
 }
 
-void Controller::jointControlSetter(){
+void Controller::jointControlSetter()
+{
 	int nDofs = mFinger->getNumDofs();
 
-    int mag_Kp[] ={3000, 3000, 3000, 800, 800, 500, 50, 50, 40, 30, 50, 50, 40, 30, 50, 50, 40, 30, 50, 50, 40, 30, 50, 50, 40, 30};
+    int mag_Kp[] ={1000, 1000, 1000, 500, 500, 500, 50, 50,50, 40, 30, 50, 50, 40, 30, 50, 50, 40, 30, 50, 50, 40, 30, 50, 50, 40, 30};
 
 	mForces = Eigen::VectorXd::Zero(nDofs);
     mKp = Eigen::MatrixXd::Identity(nDofs, nDofs);
@@ -22,16 +24,19 @@ void Controller::jointControlSetter(){
   Controller::setTargetPosition(mFinger->getPositions());
 }
 
-void Controller::setTargetPosition(const Eigen::VectorXd& pose){
+void Controller::setTargetPosition(const Eigen::VectorXd& pose)
+{
 	mTargetPositions = pose;
 }
 
-void Controller::clearForces(){
+void Controller::clearForces()
+{
 	mForces.setZero();
 }
 
 
-void Controller::addSPDForces(){
+void Controller::addSPDForces()
+{
 	Eigen::VectorXd q = mFinger->getPositions();
     Eigen::VectorXd dq = mFinger->getVelocities();
     for(int i = 0; i < q.size(); ++i){
@@ -52,3 +57,21 @@ void Controller::addSPDForces(){
     mFinger->setForces(mForces);
 }
 
+void Controller::addPDForces()
+{
+    Eigen::VectorXd q = mFinger->getPositions();
+    Eigen::VectorXd dq = mFinger->getVelocities();
+    for(int i = 0; i < q.size(); ++i){
+        if(q[i]-mTargetPositions[i] > M_PI) q[i]-=2*M_PI;
+        else if(q[i]-mTargetPositions[i] < -M_PI) q[i]+=2*M_PI;
+    }
+    // std::cout << "q" << q.transpose() <<std::endl;
+
+    Eigen::VectorXd p = -mKp * (q - mTargetPositions);
+    Eigen::VectorXd d = -mKd * dq;
+
+    mForces += p+d;
+    // std::cout <<"p" << p.transpose() <<std::endl;
+    // std::cout << "d"  << d.transpose() << std::endl;
+    mFinger->setForces(mForces);
+}

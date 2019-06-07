@@ -8,6 +8,7 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/home/mrl/dart/HandTasks/Controller.cpp" "/home/mrl/dart/HandTasks/build/CMakeFiles/manipulate.dir/Controller.cpp.o"
   "/home/mrl/dart/HandTasks/IkSolver.cpp" "/home/mrl/dart/HandTasks/build/CMakeFiles/manipulate.dir/IkSolver.cpp.o"
   "/home/mrl/dart/HandTasks/MyWindow.cpp" "/home/mrl/dart/HandTasks/build/CMakeFiles/manipulate.dir/MyWindow.cpp.o"
+  "/home/mrl/dart/HandTasks/Optimizer.cpp" "/home/mrl/dart/HandTasks/build/CMakeFiles/manipulate.dir/Optimizer.cpp.o"
   "/home/mrl/dart/HandTasks/SkelParser.cpp" "/home/mrl/dart/HandTasks/build/CMakeFiles/manipulate.dir/SkelParser.cpp.o"
   "/home/mrl/dart/HandTasks/main.cpp" "/home/mrl/dart/HandTasks/build/CMakeFiles/manipulate.dir/main.cpp.o"
   )
