@@ -1,22 +1,25 @@
 #include "Optimizer.h"
 
 double target_time = 0.3;
+double height_obj_copy;
 
-Optimizer::Optimizer(const WorldPtr& world, std::string currentSide, std::string objName)
+Optimizer::Optimizer(const WorldPtr& world, std::string currentSide, std::string objName, double rad)
 : mOriginalWorld(world), mCurrentHandName(currentSide), mCurrentObjName(objName)
 {
 	this->initiallize();
 	this->setConstraints();
 	this->randomizeInitialGuess();
 	this->parameterSetting();
+	mRad = rad;
 }
 
-Optimizer::Optimizer(const WorldPtr& world, const Eigen::VectorXd initialGuess, std::string currentSide, std::string objName)
+Optimizer::Optimizer(const WorldPtr& world, const Eigen::VectorXd initialGuess, std::string currentSide, std::string objName, double rad)
 : mOriginalWorld(world), mCurrentHandName(currentSide), mCurrentObjName(objName), mCurrentGuess(initialGuess)
 {
 	this->initiallize();
 	this->setConstraints();
 	this->parameterSetting();
+	mRad = rad;
 }
 
 void Optimizer::initiallize()
@@ -25,6 +28,7 @@ void Optimizer::initiallize()
 	mCurrentHand = mCurrentWorld->getSkeleton(mCurrentHandName);
 	mObj = mCurrentWorld->getSkeleton(mCurrentObjName);
 	mController = dart::common::make_unique<Controller>(mCurrentHand);
+	height_obj_copy = mObj->getCOM()[1] * 2;
 }
 
 void Optimizer::parameterSetting()
@@ -126,12 +130,60 @@ double Optimizer::constraintError()
 	//Single joint constraint error
 	for(int i = 0; i < mObj->getNumDofs(); ++i)
 	{
-		if(mObj->getPosition(i) < lowerConstraints[i]) error +=single_constraint_error;
-		if(mObj->getPosition(i) > upperConstraints[i]) error +=single_constraint_error;
+		if(mCurrentHand->getPosition(i) < lowerConstraints[i]) error +=single_constraint_error;
+		if(mCurrentHand->getPosition(i) > upperConstraints[i]) error +=single_constraint_error;
 	}
 	//Multiple joint constraint error
 
 	//return
+	return error;
+}
+
+double Optimizer::distanceError()
+{
+	double error = 0.0;
+	BodyNode* currentbn;
+	double soft_error = 0.05;
+
+	//Each finger distance except for thumb
+	for(int idx = 0 ; idx < 4; ++idx){
+		currentbn = mCurrentHand->getBodyNode("patch"+ std::to_string(idx));
+		Eigen::Vector3d finger_pos = currentbn->getCOM();
+		double y_diff;
+		if(finger_pos[1] > height_obj_copy)
+			y_diff= finger_pos[1] - height_obj_copy;
+
+		else
+			y_diff = 0.0;
+		double plane_diff;
+		plane_diff = diff2D(finger_pos[0], finger_pos[2], mObj->getCOM()[0], mObj->getCOM()[2]) - mRad;
+		std::cout << plane_diff << std::endl;
+		error += diff2D(plane_diff, y_diff, 0, 0);
+		std::cout << "current error" << error << std::endl;
+	}
+	currentbn = mCurrentHand->getBodyNode("thumbpatch");
+	Eigen::Vector3d finger_pos = currentbn->getCOM();
+	double y_diff;
+	if(finger_pos[1] > height_obj_copy)
+		y_diff= finger_pos[1] - height_obj_copy;
+
+	else
+		y_diff = 0.0;
+	double plane_diff;
+	plane_diff = diff2D(finger_pos[0], finger_pos[2], mObj->getCOM()[0], mObj->getCOM()[2]) - mRad;
+	error += diff2D(plane_diff, y_diff, 0, 0);
+
+	//soft palm distance error
+	currentbn = mCurrentHand->getBodyNode("palm_patch");
+	finger_pos = currentbn->getCOM();
+	if(finger_pos[1] > height_obj_copy)
+		y_diff= finger_pos[1] - height_obj_copy;
+
+	else
+		y_diff = 0.0;
+	plane_diff = diff2D(finger_pos[0], finger_pos[2], mObj->getCOM()[0], mObj->getCOM()[2]) - mRad;
+	error += soft_error * diff2D(plane_diff, y_diff, 0, 0);
+
 	return error;
 }
 
@@ -154,6 +206,10 @@ Eigen::VectorXd Optimizer::smoothMovement(int current_idx, int total_steps, cons
 	return pose;
 }
 
+double Optimizer::diff2D(double x1, double y1, double x2, double y2)
+{
+	return std::sqrt((x1-x2) * (x1-x2) + (y1-y2)* (y1-y2));
+}
 
 double Optimizer::degToRad(double degree)
 {

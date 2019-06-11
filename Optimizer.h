@@ -10,8 +10,8 @@ using namespace dart::simulation;
 class Optimizer
 {
 public:
-	Optimizer(const WorldPtr& world, std::string currentSide, std::string objName);
-	Optimizer(const WorldPtr& world, const Eigen::VectorXd initialGuess, std::string currentSide, std::string objName);
+	Optimizer(const WorldPtr& world, std::string currentSide, std::string objName, double rad);
+	Optimizer(const WorldPtr& world, const Eigen::VectorXd initialGuess, std::string currentSide, std::string objName, double rad);
 	
 	//Set initial conditions
 	void initiallize();
@@ -23,6 +23,7 @@ public:
 	void optimization(std::string test_name);
 
 	//Compute the error
+	double distanceError();
 	double contactError();
 	double constraintError();
 	double graspingError();
@@ -30,6 +31,7 @@ public:
 	//Useful functions
 	Eigen::VectorXd smoothMovement(int current_idx, int total_steps, const Eigen::VectorXd original, const Eigen::VectorXd target);
 	double degToRad(double degree);
+	double diff2D(double x1, double y1, double x2, double y2);
 	Eigen::VectorXd resultGetter();
 
 protected:
@@ -46,6 +48,7 @@ protected:
 
 	std::vector<double> lowerConstraints;
 	std::vector<double> upperConstraints;	
+	double mRad;
 	double single_step;
 	int total_steps;
 	double prev_error;

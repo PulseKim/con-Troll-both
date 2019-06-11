@@ -20,6 +20,7 @@ public:
 
 	//Smooth movement
 	Eigen::VectorXd smoothMovement(int current_idx, int total_steps, const Eigen::VectorXd original, const Eigen::VectorXd target);
+	Eigen::VectorXd smoothMovementArmFirst(int current_idx, int total_steps, const Eigen::VectorXd original, const Eigen::VectorXd target);
 	void setObject();
 	void setEndEffector(int type);
 	Eigen::VectorXd initialGuess(std::string arm_side, std::string obj_name);

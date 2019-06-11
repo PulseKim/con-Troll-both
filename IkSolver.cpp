@@ -9,12 +9,14 @@ Eigen::VectorXd IkSolver::IKMultiple
 (const SkeletonPtr& hand, std::vector<std::pair<Eigen::Vector3d, std::string>> Ends, int total_iter)
 {
 	SkeletonPtr dummyHand = hand->cloneSkeleton();
-	std::cout << "current" <<std::endl;
-	for(int i = 0; i < Ends.size(); ++i)
-		std::cout << dummyHand->getBodyNode(Ends[i].second)->getCOM().transpose()<<std::endl;
-	std::cout << "target" << std::endl;
-	for(int i =0 ; i < Ends.size(); ++i)
-		std::cout << Ends[i].first.transpose() << std::endl;
+
+
+	// std::cout << "current" <<std::endl;
+	// for(int i = 0; i < Ends.size(); ++i)
+	// 	std::cout << dummyHand->getBodyNode(Ends[i].second)->getCOM().transpose()<<std::endl;
+	// std::cout << "target" << std::endl;
+	// for(int i =0 ; i < Ends.size(); ++i)
+	// 	std::cout << Ends[i].first.transpose() << std::endl;
 
 
 	Eigen::MatrixXd J_stack = Eigen::MatrixXd::Zero(Ends[0].first.rows()*Ends.size(),hand->getPositions().size());
@@ -63,9 +65,9 @@ Eigen::VectorXd IkSolver::IKMultiple
 		dummyHand->setPositions(currentPose+tempPose);	
 	}
 	newPose = dummyHand->getPositions();
-	std::cout << "setting pose" <<std::endl;
-	for(int i = 0; i < Ends.size(); ++i)
-		std::cout << dummyHand->getBodyNode(Ends[i].second)->getCOM().transpose()<<std::endl;	
+	// std::cout << "setting pose" <<std::endl;
+	// for(int i = 0; i < Ends.size(); ++i)
+	// 	std::cout << dummyHand->getBodyNode(Ends[i].second)->getCOM().transpose()<<std::endl;	
 
 
 	return newPose;
