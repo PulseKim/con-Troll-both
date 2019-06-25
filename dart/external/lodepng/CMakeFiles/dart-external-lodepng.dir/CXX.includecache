@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/mrl/dart/dart/external/lodepng/lodepng.cpp
+lodepng.h
+/home/mrl/dart/dart/external/lodepng/lodepng.h
+limits.h
+-
+stdio.h
+-
+stdlib.h
+-
+
+/home/mrl/dart/dart/external/lodepng/lodepng.h
+string.h
+-
+vector
+-
+string
+-
+lodepng.h
+/home/mrl/dart/dart/external/lodepng/lodepng.h
+iostream
+-
+lodepng.h
+/home/mrl/dart/dart/external/lodepng/lodepng.h
+

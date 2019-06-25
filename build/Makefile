@@ -111,17 +111,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named manipulate
+# Target rules for targets named test
 
 # Build rule for target.
-manipulate: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 manipulate
-.PHONY : manipulate
+test: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 test
+.PHONY : test
 
 # fast build rule for target.
-manipulate/fast:
-	$(MAKE) -f CMakeFiles/manipulate.dir/build.make CMakeFiles/manipulate.dir/build
-.PHONY : manipulate/fast
+test/fast:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/build
+.PHONY : test/fast
 
 ArmMaker.o: ArmMaker.cpp.o
 
@@ -129,7 +129,7 @@ ArmMaker.o: ArmMaker.cpp.o
 
 # target to build an object file
 ArmMaker.cpp.o:
-	$(MAKE) -f CMakeFiles/manipulate.dir/build.make CMakeFiles/manipulate.dir/ArmMaker.cpp.o
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/ArmMaker.cpp.o
 .PHONY : ArmMaker.cpp.o
 
 ArmMaker.i: ArmMaker.cpp.i
@@ -138,7 +138,7 @@ ArmMaker.i: ArmMaker.cpp.i
 
 # target to preprocess a source file
 ArmMaker.cpp.i:
-	$(MAKE) -f CMakeFiles/manipulate.dir/build.make CMakeFiles/manipulate.dir/ArmMaker.cpp.i
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/ArmMaker.cpp.i
 .PHONY : ArmMaker.cpp.i
 
 ArmMaker.s: ArmMaker.cpp.s
@@ -147,7 +147,7 @@ ArmMaker.s: ArmMaker.cpp.s
 
 # target to generate assembly for a file
 ArmMaker.cpp.s:
-	$(MAKE) -f CMakeFiles/manipulate.dir/build.make CMakeFiles/manipulate.dir/ArmMaker.cpp.s
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/ArmMaker.cpp.s
 .PHONY : ArmMaker.cpp.s
 
 Controller.o: Controller.cpp.o
@@ -156,7 +156,7 @@ Controller.o: Controller.cpp.o
 
 # target to build an object file
 Controller.cpp.o:
-	$(MAKE) -f CMakeFiles/manipulate.dir/build.make CMakeFiles/manipulate.dir/Controller.cpp.o
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/Controller.cpp.o
 .PHONY : Controller.cpp.o
 
 Controller.i: Controller.cpp.i
@@ -165,7 +165,7 @@ Controller.i: Controller.cpp.i
 
 # target to preprocess a source file
 Controller.cpp.i:
-	$(MAKE) -f CMakeFiles/manipulate.dir/build.make CMakeFiles/manipulate.dir/Controller.cpp.i
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/Controller.cpp.i
 .PHONY : Controller.cpp.i
 
 Controller.s: Controller.cpp.s
@@ -174,7 +174,7 @@ Controller.s: Controller.cpp.s
 
 # target to generate assembly for a file
 Controller.cpp.s:
-	$(MAKE) -f CMakeFiles/manipulate.dir/build.make CMakeFiles/manipulate.dir/Controller.cpp.s
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/Controller.cpp.s
 .PHONY : Controller.cpp.s
 
 IkSolver.o: IkSolver.cpp.o
@@ -183,7 +183,7 @@ IkSolver.o: IkSolver.cpp.o
 
 # target to build an object file
 IkSolver.cpp.o:
-	$(MAKE) -f CMakeFiles/manipulate.dir/build.make CMakeFiles/manipulate.dir/IkSolver.cpp.o
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/IkSolver.cpp.o
 .PHONY : IkSolver.cpp.o
 
 IkSolver.i: IkSolver.cpp.i
@@ -192,7 +192,7 @@ IkSolver.i: IkSolver.cpp.i
 
 # target to preprocess a source file
 IkSolver.cpp.i:
-	$(MAKE) -f CMakeFiles/manipulate.dir/build.make CMakeFiles/manipulate.dir/IkSolver.cpp.i
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/IkSolver.cpp.i
 .PHONY : IkSolver.cpp.i
 
 IkSolver.s: IkSolver.cpp.s
@@ -201,7 +201,7 @@ IkSolver.s: IkSolver.cpp.s
 
 # target to generate assembly for a file
 IkSolver.cpp.s:
-	$(MAKE) -f CMakeFiles/manipulate.dir/build.make CMakeFiles/manipulate.dir/IkSolver.cpp.s
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/IkSolver.cpp.s
 .PHONY : IkSolver.cpp.s
 
 MyWindow.o: MyWindow.cpp.o
@@ -210,7 +210,7 @@ MyWindow.o: MyWindow.cpp.o
 
 # target to build an object file
 MyWindow.cpp.o:
-	$(MAKE) -f CMakeFiles/manipulate.dir/build.make CMakeFiles/manipulate.dir/MyWindow.cpp.o
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/MyWindow.cpp.o
 .PHONY : MyWindow.cpp.o
 
 MyWindow.i: MyWindow.cpp.i
@@ -219,7 +219,7 @@ MyWindow.i: MyWindow.cpp.i
 
 # target to preprocess a source file
 MyWindow.cpp.i:
-	$(MAKE) -f CMakeFiles/manipulate.dir/build.make CMakeFiles/manipulate.dir/MyWindow.cpp.i
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/MyWindow.cpp.i
 .PHONY : MyWindow.cpp.i
 
 MyWindow.s: MyWindow.cpp.s
@@ -228,7 +228,7 @@ MyWindow.s: MyWindow.cpp.s
 
 # target to generate assembly for a file
 MyWindow.cpp.s:
-	$(MAKE) -f CMakeFiles/manipulate.dir/build.make CMakeFiles/manipulate.dir/MyWindow.cpp.s
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/MyWindow.cpp.s
 .PHONY : MyWindow.cpp.s
 
 Optimizer.o: Optimizer.cpp.o
@@ -237,7 +237,7 @@ Optimizer.o: Optimizer.cpp.o
 
 # target to build an object file
 Optimizer.cpp.o:
-	$(MAKE) -f CMakeFiles/manipulate.dir/build.make CMakeFiles/manipulate.dir/Optimizer.cpp.o
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/Optimizer.cpp.o
 .PHONY : Optimizer.cpp.o
 
 Optimizer.i: Optimizer.cpp.i
@@ -246,7 +246,7 @@ Optimizer.i: Optimizer.cpp.i
 
 # target to preprocess a source file
 Optimizer.cpp.i:
-	$(MAKE) -f CMakeFiles/manipulate.dir/build.make CMakeFiles/manipulate.dir/Optimizer.cpp.i
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/Optimizer.cpp.i
 .PHONY : Optimizer.cpp.i
 
 Optimizer.s: Optimizer.cpp.s
@@ -255,7 +255,7 @@ Optimizer.s: Optimizer.cpp.s
 
 # target to generate assembly for a file
 Optimizer.cpp.s:
-	$(MAKE) -f CMakeFiles/manipulate.dir/build.make CMakeFiles/manipulate.dir/Optimizer.cpp.s
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/Optimizer.cpp.s
 .PHONY : Optimizer.cpp.s
 
 SkelParser.o: SkelParser.cpp.o
@@ -264,7 +264,7 @@ SkelParser.o: SkelParser.cpp.o
 
 # target to build an object file
 SkelParser.cpp.o:
-	$(MAKE) -f CMakeFiles/manipulate.dir/build.make CMakeFiles/manipulate.dir/SkelParser.cpp.o
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/SkelParser.cpp.o
 .PHONY : SkelParser.cpp.o
 
 SkelParser.i: SkelParser.cpp.i
@@ -273,7 +273,7 @@ SkelParser.i: SkelParser.cpp.i
 
 # target to preprocess a source file
 SkelParser.cpp.i:
-	$(MAKE) -f CMakeFiles/manipulate.dir/build.make CMakeFiles/manipulate.dir/SkelParser.cpp.i
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/SkelParser.cpp.i
 .PHONY : SkelParser.cpp.i
 
 SkelParser.s: SkelParser.cpp.s
@@ -282,7 +282,7 @@ SkelParser.s: SkelParser.cpp.s
 
 # target to generate assembly for a file
 SkelParser.cpp.s:
-	$(MAKE) -f CMakeFiles/manipulate.dir/build.make CMakeFiles/manipulate.dir/SkelParser.cpp.s
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/SkelParser.cpp.s
 .PHONY : SkelParser.cpp.s
 
 main.o: main.cpp.o
@@ -291,7 +291,7 @@ main.o: main.cpp.o
 
 # target to build an object file
 main.cpp.o:
-	$(MAKE) -f CMakeFiles/manipulate.dir/build.make CMakeFiles/manipulate.dir/main.cpp.o
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/main.cpp.o
 .PHONY : main.cpp.o
 
 main.i: main.cpp.i
@@ -300,7 +300,7 @@ main.i: main.cpp.i
 
 # target to preprocess a source file
 main.cpp.i:
-	$(MAKE) -f CMakeFiles/manipulate.dir/build.make CMakeFiles/manipulate.dir/main.cpp.i
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/main.cpp.i
 .PHONY : main.cpp.i
 
 main.s: main.cpp.s
@@ -309,7 +309,7 @@ main.s: main.cpp.s
 
 # target to generate assembly for a file
 main.cpp.s:
-	$(MAKE) -f CMakeFiles/manipulate.dir/build.make CMakeFiles/manipulate.dir/main.cpp.s
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/main.cpp.s
 .PHONY : main.cpp.s
 
 # Help Target
@@ -320,7 +320,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... manipulate"
+	@echo "... test"
 	@echo "... ArmMaker.o"
 	@echo "... ArmMaker.i"
 	@echo "... ArmMaker.s"

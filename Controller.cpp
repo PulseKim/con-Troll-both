@@ -11,7 +11,7 @@ void Controller::jointControlSetter()
 {
 	int nDofs = mFinger->getNumDofs();
 
-    int mag_Kp[] ={1000, 1000, 1000, 500, 500, 500, 50, 50,50, 40, 30, 50, 50, 40, 30, 50, 50, 40, 30, 50, 50, 40, 30, 50, 50, 40, 30};
+    int mag_Kp[] ={2000, 2000,2000, 400, 400,300, 300, 100, 100,100, 100, 30, 50, 50, 40, 30, 50, 50, 40, 30, 50, 50, 40, 30, 50, 50, 40, 30};
 
 	mForces = Eigen::VectorXd::Zero(nDofs);
     mKp = Eigen::MatrixXd::Identity(nDofs, nDofs);

@@ -2173,6 +2173,7 @@ CMakeFiles/manipulate.dir/MyWindow.cpp.o
  /usr/local/include/dart/utils/utils.hpp
 CMakeFiles/manipulate.dir/Optimizer.cpp.o
  /home/mrl/dart/HandTasks/Controller.h
+ /home/mrl/dart/HandTasks/IkSolver.h
  /home/mrl/dart/HandTasks/Optimizer.cpp
  /home/mrl/dart/HandTasks/Optimizer.h
  /usr/include/eigen3/Eigen/Cholesky

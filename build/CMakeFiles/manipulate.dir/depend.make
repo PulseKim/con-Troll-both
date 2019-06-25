@@ -2172,6 +2172,7 @@ CMakeFiles/manipulate.dir/MyWindow.cpp.o: /usr/local/include/dart/utils/sdf/sdf.
 CMakeFiles/manipulate.dir/MyWindow.cpp.o: /usr/local/include/dart/utils/utils.hpp
 
 CMakeFiles/manipulate.dir/Optimizer.cpp.o: ../Controller.h
+CMakeFiles/manipulate.dir/Optimizer.cpp.o: ../IkSolver.h
 CMakeFiles/manipulate.dir/Optimizer.cpp.o: ../Optimizer.cpp
 CMakeFiles/manipulate.dir/Optimizer.cpp.o: ../Optimizer.h
 CMakeFiles/manipulate.dir/Optimizer.cpp.o: /usr/include/eigen3/Eigen/Cholesky
