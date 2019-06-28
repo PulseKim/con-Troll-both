@@ -141,13 +141,14 @@ void Optimizer::optimization(std::string test_name)
 		std::cout << mCurrentPoseSeries[i].transpose() << std::endl;
 
 	//Write the result on the algorithm
-	std::ofstream outFile(test_name+"txt");
+	std::ofstream outFile(test_name+".txt");
+	outFile << target_time << std::endl;
 	for(int i = 0; i< mCurrentPoseSeries.size();++i){
-		outFile << "pose " << i << std::endl;
-		for(int j=0; j < mCurrentPoseSeries[i].size(); ++j){
+			for(int j=0; j < mCurrentPoseSeries[i].size(); ++j){
 			outFile << mCurrentPoseSeries[i][j] << std::endl;
 		}
 	}
+	outFile.close();
 
 }
 
@@ -159,8 +160,8 @@ double Optimizer::GDIterate(int pose_numb)
 	std::vector<Eigen::VectorXd>series = mCurrentPoseSeries;
 
 	double epsilon = this->degToRad(0.25);
-	double lambda = 0.1;
-	double max_angle_step = this->degToRad(15);
+	double lambda = 0.05;
+	double max_angle_step = this->degToRad(5);
 
 	for(int i = 0 ; i < iterPose.rows(); ++i)
 	{
@@ -191,9 +192,19 @@ double Optimizer::GDIterate(int pose_numb)
 	{
 		Eigen::VectorXd computed_grad = Eigen::VectorXd::Zero(iterPose.rows());
 		computed_grad = lambda * grad;
-		for(int i =0 ; i < grad.rows(); ++i){
-			if(computed_grad[i] > max_angle_step) computed_grad[i] = max_angle_step;
-			if(computed_grad[i] < -max_angle_step) computed_grad[i] = -max_angle_step;
+		if(iter == 0){
+			for(int i =0 ; i < grad.rows(); ++i){
+				if(computed_grad[i] > max_angle_step) 
+				{
+					computed_grad[i] = max_angle_step;
+					grad[i] = computed_grad[i] / lambda;
+				}
+				else if(computed_grad[i] < -max_angle_step)
+				{
+					computed_grad[i] = -max_angle_step;
+					grad[i] = computed_grad[i] / lambda;
+				}
+			}
 		}
 		current_series[pose_numb] = (mCurrentPoseSeries[pose_numb] - computed_grad);
 		this->simulationStep(current_series);
@@ -224,7 +235,7 @@ double Optimizer::SGDIterate(int pose_numb)
 
 	double epsilon = this->degToRad(0.25);
 	double lambda;
-	double max_angle_step = this->degToRad(15);
+	double max_angle_step = this->degToRad(5);
 	double old_error = prev_error;
 
 	for(int i = 0 ; i < iterPose.rows(); ++i)
@@ -255,8 +266,18 @@ double Optimizer::SGDIterate(int pose_numb)
 		{
 			double computed_grad;
 			computed_grad = lambda * grad;
-			if(computed_grad > max_angle_step) computed_grad = max_angle_step;
-			if(computed_grad < -max_angle_step) computed_grad = -max_angle_step;
+			if(iter == 0){
+				if(computed_grad > max_angle_step) 
+				{
+					computed_grad = max_angle_step;
+					grad = computed_grad / lambda;
+				}
+				if(computed_grad < -max_angle_step)
+				{
+					computed_grad = -max_angle_step;
+					grad = computed_grad / lambda;
+				}
+			}
 			current_series[pose_numb][i] = (mCurrentPoseSeries[pose_numb][i] - computed_grad);
 			this->simulationStep(current_series);
 			double current_error = calculateTotalError();
@@ -315,46 +336,91 @@ void Optimizer::simulationStep(std::vector<Eigen::VectorXd> series)
 double Optimizer::calculateTotalError()
 {
 	double error = 0.0;
-	double  w_cs = 2.0 ,w_d = 1.0 , w_os = 0.4, w_ct = 0.05, w_g, w_gq = 0.1;
+	double  w_c = 2.0 ,w_d = 1.0 , w_os = 0.5, w_im= 0.05, w_g;
 
-	error += w_cs *this->constraintError();
+	//Differentiable Functions
+	error += w_c *this->constraintError();
 	error += w_d * this->distanceError();
 	error += w_os *this->objectStableError();
-	error += w_ct *this->contactError();
-	error += w_gq *this->graspingQuality();
-	// error += w_d *this->graspingError();
+	//ImpulseFunctions
+	error += w_im *this->impulseError();
+
 	return error;
 }
 
-double Optimizer::objectStableError()
-{
-	return (mObj->getCOMLinearVelocity()).norm();
-}
-
-double Optimizer::graspingError()
+double Optimizer::constraintError()
 {
 	double error = 0.0;
-	Eigen::Vector3d current_palm = mCurrentHand->getBodyNode("palm_patch")->getCOM();
-	Eigen::Vector3d target_palm = current_palm;
-	target_palm[1] += 0.2;
-	std::vector<std::pair<Eigen::Vector3d, std::string>> End;
-	End.push_back(std::make_pair(target_palm, "palm_patch"));
+	double single_constraint_error = 1.0;
+	double penetrate = 0.5;
 
-	IkSolver ik;
-	Eigen::VectorXd current_pose = mCurrentHand->getPositions();
-	Eigen::VectorXd move_up = ik.IKMultiple(mCurrentHand, End, 1000);
-	int smoothing_step = target_time/ mCurrentWorld->getTimeStep();
+	//Single joint constraint error
+	error += single_constraint_error * this->singleConstraintError();
 	
-	for(int j = 1; j < smoothing_step+1; ++j)
+	//Penetration Error
+	error += penetrate * this->fingerToFingerPenetrationConstraintError();
+
+	return error;
+}
+
+double Optimizer::singleConstraintError()
+{
+	double error = 0.0;
+	for(int i = 0; i < mCurrentHand->getNumDofs(); ++i)
 	{
-		mController->clearForces();
-		mController->addSPDForces();
-		mController->setTargetPosition(this->smoothMovement(j, smoothing_step, current_pose, move_up));
-		mCurrentWorld->step();
+		if(mCurrentHand->getPosition(i) < lowerConstraints[i])	error +=(lowerConstraints[i] - mCurrentHand->getPosition(i));
+		if(mCurrentHand->getPosition(i) > upperConstraints[i])	error +=(mCurrentHand->getPosition(i) - upperConstraints[i]);
 	}
+	return error;
+}
 
-	//Calculate the grasping error here
+double Optimizer::fingerToFingerPenetrationConstraintError()
+{
+	double error = 0.0;
+	auto collisionEngine = mCurrentWorld->getConstraintSolver()->getCollisionDetector();
+	auto standard_finger = collisionEngine->createCollisionGroup();
+	auto comparision_finger = collisionEngine->createCollisionGroup();
+	standard_finger->addShapeFramesOf(mCurrentHand->getBodyNode("thumb distphalanx"));
+	for(int i = 0; i< 4; ++i)
+	{
+		comparision_finger->addShapeFramesOf(mCurrentHand->getBodyNode("distphalanx"+ std::to_string(i)));
+		if(standard_finger->collide(comparision_finger.get()))
+			error += 0.05 - (mCurrentHand->getBodyNode("thumb distphalanx")->getCOM() - mCurrentHand->getBodyNode("distphalanx"+ std::to_string(i))->getCOM()).norm();
+		comparision_finger->removeShapeFramesOf(mCurrentHand->getBodyNode("distphalanx"+ std::to_string(i)));
+	}
+	standard_finger->removeShapeFramesOf(mCurrentHand->getBodyNode("thumb distphalanx"));
 
+	for(int i = 0; i < 4; ++i)
+	{
+		standard_finger->addShapeFramesOf(mCurrentHand->getBodyNode("distphalanx"+ std::to_string(i)));
+		for(int j = i+1; j <4 ;++j)
+		{
+			comparision_finger->addShapeFramesOf(mCurrentHand->getBodyNode("distphalanx"+ std::to_string(j)));
+			if(standard_finger->collide(comparision_finger.get()))
+				error += 0.05 -(mCurrentHand->getBodyNode("distphalanx"+ std::to_string(i))->getCOM() - mCurrentHand->getBodyNode("distphalanx"+ std::to_string(j))->getCOM()).norm();
+			comparision_finger->removeShapeFramesOf(mCurrentHand->getBodyNode("distphalanx"+ std::to_string(j)));
+		}
+		standard_finger->removeShapeFramesOf(mCurrentHand->getBodyNode("distphalanx"+ std::to_string(i)));
+	}
+	return error;
+}
+
+double Optimizer::distanceError()
+{
+	double error = 0.0;
+	double w_gq = 2.0;
+	auto collisionEngine = mCurrentWorld->getConstraintSolver()->getCollisionDetector();
+	auto objGroup = collisionEngine->createCollisionGroup(mObj.get());
+	auto handGroup = collisionEngine->createCollisionGroup();
+	handGroup->addShapeFramesOf(mCurrentHand->getBodyNode("thumb distphalanx"));	
+	error += handGroup->distance(objGroup.get());
+	handGroup->removeShapeFramesOf(mCurrentHand->getBodyNode("thumb distphalanx"));
+	for(int i =0 ; i < 4;++i){
+		handGroup->addShapeFramesOf(mCurrentHand->getBodyNode("distphalanx"+ std::to_string(i)));
+		error += handGroup->distance(objGroup.get());
+		handGroup->removeShapeFramesOf(mCurrentHand->getBodyNode("distphalanx"+ std::to_string(i)));
+	}
+	error += w_gq *this->graspingQuality();
 	return error;
 }
 
@@ -366,29 +432,113 @@ double Optimizer::graspingQuality()
 	double cmf = finger_pos[1];
 	double cmo = mObj->getCOM()[1];
 	error += std::abs(cmf-cmo);
-
 	return error;
 }
 
-double Optimizer::constraintError()
+double Optimizer::objectStableError()
+{
+	return (mObj->getCOMLinearVelocity()).norm();
+}
+
+double Optimizer::handObjPenetrationError()
 {
 	double error = 0.0;
-	double single_constraint_error = 1.0;
-	//Single joint constraint error
-	for(int i = 0; i < mCurrentHand->getNumDofs(); ++i)
-	{
-		// std::cout << mCurrentHand->getPosition(i) <<" and " << lowerConstraints[i] << " and " << upperConstraints[i] <<std::endl;
-		if(mCurrentHand->getPosition(i) < lowerConstraints[i])	error +=single_constraint_error * (lowerConstraints[i] - mCurrentHand->getPosition(i));
-		if(mCurrentHand->getPosition(i) > upperConstraints[i])	error +=single_constraint_error * (mCurrentHand->getPosition(i) - upperConstraints[i]);
 
-	}
-	//Multiple joint constraint error
-	// std::cout << "const" << error << std::endl;
-	//return
 	return error;
 }
 
-double Optimizer::distanceError()
+double Optimizer::impulseError()
+{
+	double error = 0.0;
+	double floor = 0.1;
+	// double penetrate = 0.5;
+
+	error += floor * this->contactError();
+	// error += penetrate * this->fingerToFingerPenetrationConstraintError();
+
+	return error;
+}
+
+double Optimizer::contactError()
+{
+	double error;
+	auto collisionGroup = mCurrentWorld->getConstraintSolver()->getCollisionGroup();
+	auto collisionEngine = mCurrentWorld->getConstraintSolver()->getCollisionDetector();
+	auto newGroup = collisionEngine->createCollisionGroup(mCurrentHand.get());
+	collisionGroup->removeShapeFramesOf(mObj.get());
+	collisionGroup->removeShapeFramesOf(mCurrentHand.get());
+	bool floorCollision = collisionGroup->collide(newGroup.get());
+
+	collisionGroup->addShapeFramesOf(mObj.get());
+	collisionGroup->addShapeFramesOf(mCurrentHand.get());
+
+	if(floorCollision) error = 1.0;
+	else error = 0.0;
+	
+	return error;
+}
+
+
+// double Optimizer::graspingError()
+// {
+// 	//Not using it currently.
+// 	double error = 0.0;
+// 	Eigen::Vector3d current_palm = mCurrentHand->getBodyNode("palm_patch")->getCOM();
+// 	Eigen::Vector3d target_palm = current_palm;
+// 	target_palm[1] += 0.2;
+// 	std::vector<std::pair<Eigen::Vector3d, std::string>> End;
+// 	End.push_back(std::make_pair(target_palm, "palm_patch"));
+
+// 	IkSolver ik;
+// 	Eigen::VectorXd current_pose = mCurrentHand->getPositions();
+// 	Eigen::VectorXd move_up = ik.IKMultiple(mCurrentHand, End, 1000);
+// 	int smoothing_step = target_time/ mCurrentWorld->getTimeStep();
+	
+// 	for(int j = 1; j < smoothing_step+1; ++j)
+// 	{
+// 		mController->clearForces();
+// 		mController->addSPDForces();
+// 		mController->setTargetPosition(this->smoothMovement(j, smoothing_step, current_pose, move_up));
+// 		mCurrentWorld->step();
+// 	}
+
+// 	//Calculate the grasping error here
+
+// 	return error;
+// }
+
+std::vector<Eigen::VectorXd> Optimizer::resultGetter()
+{
+	return mCurrentPoseSeries;
+}
+
+double Optimizer::timeGetter()
+{
+	return target_time;
+}
+
+Eigen::VectorXd Optimizer::smoothMovement(int current_idx, int total_steps, const Eigen::VectorXd original, const Eigen::VectorXd target)
+{
+	Eigen::VectorXd pose = original;
+	for(int j = 0 ; j < target.size(); ++j){
+		pose[j] = original[j] + (target[j] - original[j]) * current_idx / total_steps;
+	}
+	return pose;
+}
+
+double Optimizer::diff2D(double x1, double y1, double x2, double y2)
+{
+	return std::sqrt((x1-x2) * (x1-x2) + (y1-y2)* (y1-y2));
+}
+
+double Optimizer::degToRad(double degree)
+{
+	return degree * M_PI / 180;
+}
+
+
+
+double Optimizer::oldDistanceError()
 {
 	double error = 0.0;
 	BodyNode* currentbn;
@@ -435,53 +585,4 @@ double Optimizer::distanceError()
 	error += soft_weight * this->diff2D(plane_diff, y_diff, 0, 0);
 
 	return error;
-}
-
-std::vector<Eigen::VectorXd> Optimizer::resultGetter()
-{
-	return mCurrentPoseSeries;
-}
-
-double Optimizer::contactError()
-{
-	double error;
-	auto collisionGroup = mCurrentWorld->getConstraintSolver()->getCollisionGroup();
-	auto collisionEngine = mCurrentWorld->getConstraintSolver()->getCollisionDetector();
-	auto newGroup = collisionEngine->createCollisionGroup(mCurrentHand.get());
-	collisionGroup->removeShapeFramesOf(mObj.get());
-	collisionGroup->removeShapeFramesOf(mCurrentHand.get());
-	bool floorCollision = collisionGroup->collide(newGroup.get());
-
-	collisionGroup->addShapeFramesOf(mObj.get());
-	collisionGroup->addShapeFramesOf(mCurrentHand.get());
-
-	if(floorCollision) error = 1.0;
-	else error = 0.0;
-	
-	return error;
-}
-
-
-double Optimizer::timeGetter()
-{
-	return target_time;
-}
-
-Eigen::VectorXd Optimizer::smoothMovement(int current_idx, int total_steps, const Eigen::VectorXd original, const Eigen::VectorXd target)
-{
-	Eigen::VectorXd pose = original;
-	for(int j = 0 ; j < target.size(); ++j){
-		pose[j] = original[j] + (target[j] - original[j]) * current_idx / total_steps;
-	}
-	return pose;
-}
-
-double Optimizer::diff2D(double x1, double y1, double x2, double y2)
-{
-	return std::sqrt((x1-x2) * (x1-x2) + (y1-y2)* (y1-y2));
-}
-
-double Optimizer::degToRad(double degree)
-{
-	return degree * M_PI / 180;
 }

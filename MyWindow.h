@@ -36,6 +36,8 @@ public:
 	void timeStepping() override;
 	void draw() override;
 
+	//Useful methods
+	void playSavedMovement(std::string filePath);
 	double degToRad(double degree);
 	void tempCollision();
 

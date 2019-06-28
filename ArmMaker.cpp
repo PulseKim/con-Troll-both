@@ -24,8 +24,9 @@ void ArmMaker::makeFullArm(double length, const Eigen::Vector3d location)
 	rightArm->setPosition(index_thumb, 30*M_PI/180);
 	rightArm->setPosition(index_thumb+1, 60*M_PI/180);
 	rightArm->setPosition(index_thumb+3, -20*M_PI/180);
-	// leftArm->setPosition(index_thumb+1, -30*M_PI/180);
-	// leftArm->setPosition(index_thumb+2, 80*M_PI/180);
+	leftArm->setPosition(index_thumb, 30*M_PI/180);
+	leftArm->setPosition(index_thumb+1, -60*M_PI/180);
+	leftArm->setPosition(index_thumb+3, 20*M_PI/180);
 }
 
 void ArmMaker::makeRightArm(double length, const Eigen::Vector3d location)

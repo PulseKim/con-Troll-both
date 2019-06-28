@@ -26,14 +26,21 @@ public:
 	double SGDIterate(int pose_numb);
 	void simulationStep(std::vector<Eigen::VectorXd> series);
 
-	//Compute the error
+	//Total Error
 	double calculateTotalError();
-	double objectStableError();
-	double distanceError();
-	double contactError();
+	
+	//Continuous Error
 	double constraintError();
-	double graspingError();
+	double singleConstraintError();
+	double distanceError();
 	double graspingQuality();
+	double objectStableError();
+	double handObjPenetrationError();
+
+	//Impulse Error
+	double impulseError();
+	double contactError();
+	double fingerToFingerPenetrationConstraintError();
 
 	//Useful functions
 	Eigen::VectorXd smoothMovement(int current_idx, int total_steps, const Eigen::VectorXd original, const Eigen::VectorXd target);
@@ -41,6 +48,9 @@ public:
 	double diff2D(double x1, double y1, double x2, double y2);
 	std::vector<Eigen::VectorXd> resultGetter();
 	double timeGetter();
+
+	//Old Functions
+	double oldDistanceError();
 
 protected:
 	WorldPtr mOriginalWorld;

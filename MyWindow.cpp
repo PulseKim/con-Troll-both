@@ -6,7 +6,8 @@ MyWindow::MyWindow(const WorldPtr& world) : SimWindow()
 	this->setWorld(world);	
 	this->initParameters();
 	this->initWindowSetting();
-	// this->startOptimization();
+	// this->playSavedMovement("test2_maxstep.txt");
+	this->startOptimization();
 
 }
 
@@ -16,8 +17,8 @@ void MyWindow::initParameters()
 	movement = false;
 	series_movement = false;	
 	total_steps = 300;
-	rad_obj = 0.055;
-	height_obj = 0.2;
+	rad_obj = 0.04;
+	height_obj = 0.3;
 }
 
 void MyWindow::initWindowSetting()
@@ -32,7 +33,7 @@ void MyWindow::startOptimization()
 {
 	this->initPoseGetter("arm_r", "object");
 	Optimizer* op = new Optimizer(mWorld, poseSeries, "arm_r", "object", rad_obj);
-	op->optimization("test1");
+	op->optimization("test6");
 	poseSeries = op->resultGetter();
 	series_movement = true;
 	flag = 0;
@@ -63,7 +64,7 @@ void MyWindow::setObject()
 	SkelParser skel;
 	skel.freeCylinder(mObj, "cylinder1", rad_obj, height_obj, Eigen::Vector3d(0,0, 0), 0.1, dart::Color::Red());
 	mObj->setPosition(0, this->degToRad(90));
-	mObj->setPosition(3, -0.10);
+	mObj->setPosition(3, -0.08);
 	mObj->setPosition(4, height_obj/2 + 0.001);
 	mObj->setPosition(5, 0.55);
 	mWorld->addSkeleton(mObj);
@@ -175,7 +176,10 @@ Eigen::VectorXd MyWindow::handsup(std::string current_arm)
 	Eigen::VectorXd up_pose;
 	Eigen::Vector3d current_com = mWorld->getSkeleton(current_arm)->getBodyNode("palm_patch")->getCOM();
 	handik.push_back(std::make_pair(current_com + Eigen::Vector3d(0,0.05,0), "palm_patch"));
-	up_pose = ik.IKMultiple(mWorld->getSkeleton(current_arm), handik, 1000);
+	Eigen::VectorXd weight = Eigen::VectorXd::Zero((mWorld->getSkeleton(current_arm)->getPositions().size()));
+	for(int i =0 ;i < 6; ++i)
+		weight[i]=1;
+	up_pose = ik.IKMultipleFixedWeighted(mWorld->getSkeleton(current_arm), handik, weight,1000);
 	return up_pose;
 }
 
@@ -204,6 +208,65 @@ Eigen::VectorXd MyWindow::smoothMovementArmFirst(int current_idx, int total_step
 		}
 	}
 	return pose;
+}
+
+void MyWindow::playSavedMovement(std::string filePath)
+{
+	std::ifstream openFile(filePath.data());
+	double num;
+	int local = 0;
+	int cnt = 0;
+	Eigen::VectorXd pose = rest_poseR;
+	while(openFile >> num){
+		if(local == 0 )
+		{
+			total_steps = num / mWorld->getTimeStep();
+			local = 1;
+		}
+		else
+		{
+			if(cnt < pose.size()-1)
+			{
+				pose[cnt] = num;
+				cnt++;
+			}
+			else
+			{
+				pose[cnt] = num;
+				poseSeries.push_back(pose);
+				cnt = 0;
+			}
+		}
+    }
+	openFile.close();
+	series_movement = true;
+	flag = 0;
+}
+
+void MyWindow::tempCollision()
+{
+	// std::cout << mWorld->getSimFrames() << std::endl;
+	auto cont = mWorld->getLastCollisionResult().getContacts();
+	// std::cout << cont[0].force <<std::endl;
+	// std::cout << mWorld->getLastCollisionResult().getContact(0).force << std::endl;
+	// for(int i= 0; i < cont.size(); ++i){
+	// 	std::cout << mWorld->getLastCollisionResult().getContact(i).collisionObject1->getShapeFrame()->getName() <<std::endl;
+	// 	std::cout << mWorld->getLastCollisionResult().getContact(i).collisionObject2->getShapeFrame()->getName() <<std::endl;
+	// }
+	auto collisionEngine = mWorld->getConstraintSolver()->getCollisionDetector();
+	auto objGroup = collisionEngine->createCollisionGroup(mObj.get());
+	auto finger1 = collisionEngine->createCollisionGroup((mArm_r->getBodyNode("distphalanx2")));
+	auto handGroup = collisionEngine->createCollisionGroup();
+	handGroup->addShapeFramesOf(mArm_r->getBodyNode("thumb distphalanx"));	
+	handGroup->distance(objGroup.get());
+	handGroup->removeShapeFramesOf(mArm_r->getBodyNode("thumb distphalanx"));
+	for(int i =0 ; i < 4;++i){
+		handGroup->addShapeFramesOf(mArm_r->getBodyNode("distphalanx"+ std::to_string(i)));
+		std::cout <<"collide" << handGroup->collide(finger1.get()) << std::endl;
+		handGroup->removeShapeFramesOf(mArm_r->getBodyNode("distphalanx"+ std::to_string(i)));
+	}
+
+
 }
 
 
@@ -286,24 +349,6 @@ void MyWindow::timeStepping()
 	}
 
 	SimWindow::timeStepping();
-}
-
-void MyWindow::tempCollision()
-{
-	std::cout << mWorld->getSimFrames() << std::endl;
-	auto cont = mWorld->getLastCollisionResult().getContacts();
-	std::cout << cont[0].triID1 << std::endl;
-	std::cout << cont[0].force <<std::endl;
-	std::cout << mWorld->getLastCollisionResult().getContact(0).force << std::endl;
-	for(int i= 0; i < cont.size(); ++i){
-		std::cout << mWorld->getLastCollisionResult().getContact(i).collisionObject1->getShapeFrame()->getName() <<std::endl;
-		std::cout << mWorld->getLastCollisionResult().getContact(i).collisionObject2->getShapeFrame()->getName() <<std::endl;
-	}
-	auto collisionEngine = mWorld->getConstraintSolver()->getCollisionDetector();
-	auto handGroup = collisionEngine->createCollisionGroup();
-	handGroup->addShapeFramesOf(mArm_r->getBodyNode("distphalanx0"));
-	auto objGroup = collisionEngine->createCollisionGroup(mObj.get());
-	std::cout << "dist " << handGroup->distance(objGroup.get()) << std::endl;
 }
 
 void MyWindow::draw()
