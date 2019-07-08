@@ -6,8 +6,8 @@ MyWindow::MyWindow(const WorldPtr& world) : SimWindow()
 	this->setWorld(world);	
 	this->initParameters();
 	this->initWindowSetting();
-	// this->playSavedMovement("test2_maxstep.txt");
-	this->startOptimization();
+	this->playSavedMovement("test6.txt");
+	// this->startOptimization();
 
 }
 
