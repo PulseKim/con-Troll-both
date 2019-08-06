@@ -1,1 +1,0 @@
-/usr/bin/c++  -fPIC  -Wall -Wextra -fPIC -O3 -DNDEBUG -Wl,--no-undefined -shared -Wl,-soname,libdart-external-imgui.so.6.8 -o libdart-external-imgui.so.6.8.0 CMakeFiles/dart-external-imgui.dir/imgui_draw.cpp.o CMakeFiles/dart-external-imgui.dir/imgui.cpp.o CMakeFiles/dart-external-imgui.dir/imgui_widgets.cpp.o 
